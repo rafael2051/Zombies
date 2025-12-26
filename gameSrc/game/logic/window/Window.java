@@ -1,28 +1,26 @@
-package game.logica.janela;
+package game.logic.window;
 
 
 import java.awt.Graphics;
 import java.awt.Color;
 
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import game.apis.ApiPlayerClient;
-import game.logica.player.Bullet;
-import game.logica.player.BulletStandard;
+import game.logic.player.Bullet;
+import game.logic.player.BulletStandard;
 
-import game.logica.player.Player;
+import game.logic.player.Player;
 
 import game.Keys;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import game.logica.zombie.Zombie;
+import game.logic.zombie.Zombie;
 import javax.imageio.ImageIO;
 
 import java.io.IOException;
@@ -34,17 +32,16 @@ import java.awt.image.BufferedImage;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import java.awt.event.WindowListener;
 import client.GameClient;
 
-public class Janela extends JFrame{
+@SuppressWarnings("unchecked")
+public class Window extends JFrame{
 	public JPanel tela;
-    public List <Player> players;
+    public List<Player> players;
     public boolean[] controleTecla = new boolean[7];
-	public List <Zombie> zombies; 
-	public List <Bullet> bullets;
+	public List<Zombie> zombies; 
+	public List<Bullet> bullets;
 	public List<Bullet>[] bulletsFromOtherPlayers;
-	private BulletStandard bulletStandard;
 	private int fortressHP;
 	private int damageTaken;
 
@@ -65,7 +62,7 @@ public class Janela extends JFrame{
 
 	private GameClient gameClient;	
     
-    public Janela(int width, int height){
+    public Window(int width, int height){
 
         this.addKeyListener(new KeyListener() {
 
@@ -235,8 +232,6 @@ public class Janela extends JFrame{
 		wait_room_not_ready = buffered_wait_room_not_ready.getScaledInstance(width, height, Image.SCALE_SMOOTH);
 		current_wait_room_image = wait_room_not_ready;
 
-
-		this.bulletStandard = new BulletStandard(5, 1);
 		getContentPane().add(tela);
 		setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

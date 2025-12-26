@@ -1,4 +1,4 @@
-package game.logica.player;
+package game.logic.player;
 
 import java.io.File;
 import java.io.IOException;

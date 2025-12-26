@@ -1,14 +1,14 @@
 import game.apis.ApiPlayerClient;
-import game.logica.janela.Janela;
-import game.threads.TarefaControlOtherPlayers;
-import game.threads.TarefaMoveLocalPlayer;
-import game.threads.TarefaControlShoot;
-import game.threads.TarefaMoveZombie;
-import game.logica.player.Bullet;
-import game.logica.player.BulletStandard;
-import game.logica.player.Player;
-import game.logica.zombie.Zombie;
-import game.logica.zombie.ZombieStandard;
+import game.logic.window.Window;
+import game.threads.ControlOtherPlayersTask;
+import game.threads.MoveLocalPlayerTask;
+import game.threads.ControlShootTask;
+import game.threads.ZombieMoveTask;
+import game.logic.player.Bullet;
+import game.logic.player.BulletStandard;
+import game.logic.player.Player;
+import game.logic.zombie.Zombie;
+import game.logic.zombie.ZombieStandard;
 import server.GameServer;
 import client.GameClient;
 
@@ -22,7 +22,7 @@ public class App {
 
         Random random = new Random();
 
-        Janela janela = new Janela(1000, 1000);
+        Window window = new Window(1000, 1000);
         ZombieStandard zombieStandard = new ZombieStandard(80, 80);
 
         BulletStandard bulletStandard = new BulletStandard(10, 2);
@@ -35,49 +35,49 @@ public class App {
 
         while(true){
 
-            if(janela.getStatus() == 0){
+            if(window.getStatus() == 0){
                 while(true){
-                    janela.changeMenuImage();
-                    janela.checkEnterPressed();
-                    if(janela.getStatus() == 1 ||
-                        janela.getGameExit() == 1){
+                    window.changeMenuImage();
+                    window.checkEnterPressed();
+                    if(window.getStatus() == 1 ||
+                        window.getGameExit() == 1){
                         Thread.sleep(1000);
                         break;
                     }
-                    janela.render();
+                    window.render();
                     Thread.sleep(40);
                 }
             }
 
-            if(janela.getGameExit() == 1){
+            if(window.getGameExit() == 1){
                 System.exit(0);
             }
 
 
-            else if(janela.getStatus() == 1){
+            else if(window.getStatus() == 1){
                 gameClient = GameClient.getInstance();
                 gameClient.start();
-                janela.setGameClient(gameClient);
+                window.setGameClient(gameClient);
                 while(true){
-                    janela.checkEnterPressed();
-                    janela.checkStartGame();
-                    if(janela.getStatus() == 2){
+                    window.checkEnterPressed();
+                    window.checkStartGame();
+                    if(window.getStatus() == 2){
                         Thread.sleep(1000);
                         break;
                     }
-                    janela.render();
+                    window.render();
                     Thread.sleep(40);
                 }
             }
 
-            else if (janela.getStatus() == 2){
+            else if (window.getStatus() == 2){
                 gameServer = GameServer.getInstance();
                 gameServer.start();
                 String positions = ApiPlayerClient.getInstance().getPlayersPos();
                 String[] playersPos = positions.split(";");
                 int noPlayers = ApiPlayerClient.getInstance().getNoPlayers();
                 ApiPlayerClient.getInstance().initMessage(noPlayers);
-                janela.initBulletsFromOtherPlayers(noPlayers);
+                window.initBulletsFromOtherPlayers(noPlayers);
                 localPlayer = null;
                 for(int i = 0 ; i < noPlayers;i++){
                     String[] parameters = playersPos[i].split("/");
@@ -86,42 +86,42 @@ public class App {
                     int posY = Integer.parseInt(parameters[2]);
                     if(parameters[3].equals("true")){
                         localPlayer = new Player(id, posX, posY, 80, 80);
-                        janela.addPlayer(localPlayer);
+                        window.addPlayer(localPlayer);
                     } else if(parameters[3].equals("false")){
-                        janela.addPlayer(new Player(id, posX, posY, 80, 80));
+                        window.addPlayer(new Player(id, posX, posY, 80, 80));
                     }
                 }
                 gameClient.setLocalPlayer(localPlayer);
-                Runnable tarefaMove = new TarefaMoveLocalPlayer(janela, localPlayer, bulletStandard);
+                Runnable tarefaMove = new MoveLocalPlayerTask(window, localPlayer, bulletStandard);
                 Thread threadMove = new Thread(tarefaMove);
                 threadMove.start();
-                for(Player player : janela.players){
+                for(Player player : window.players){
                     if(player.getId() != ApiPlayerClient.getInstance().getId()){
-                        Runnable tarefaMoveOtherPlayers = new TarefaControlOtherPlayers(janela, bulletStandard, player);
+                        Runnable tarefaMoveOtherPlayers = new ControlOtherPlayersTask(window, bulletStandard, player);
                         Thread threadMoveOtherPlayers = new Thread(tarefaMoveOtherPlayers);
                         threadMoveOtherPlayers.start();
                     }
                 }
-                Runnable tarefaControlShoot = new TarefaControlShoot(janela, localPlayer, bulletStandard);
+                Runnable tarefaControlShoot = new ControlShootTask(window, localPlayer, bulletStandard);
                 Thread threadControlShoot = new Thread(tarefaControlShoot);
                 threadControlShoot.start();
-                Runnable tarefaMoveZombie = new TarefaMoveZombie(janela, zombieStandard);
+                Runnable tarefaMoveZombie = new ZombieMoveTask(window, zombieStandard);
                 Thread threadMoveZombie = new Thread(tarefaMoveZombie);
                 threadMoveZombie.start();
                 while(true){
-                    if(janela.getFortressHP() <= 0 || 
-                        janela.players.stream().allMatch((p) -> p.getHP() <= 0)){
-                        janela.finishGame();
-                        janela.clean();
+                    if(window.getFortressHP() <= 0 || 
+                        window.players.stream().allMatch((p) -> p.getHP() <= 0)){
+                        window.finishGame();
+                        window.clean();
                         break;
                     }
-                    janela.render();
+                    window.render();
                     Thread.sleep(40);
                 }
             }
 
-            else if(janela.getStatus() == 3){
-                janela.render();
+            else if(window.getStatus() == 3){
+                window.render();
                 Thread.sleep(40);
             }
 

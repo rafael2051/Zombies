@@ -8,7 +8,7 @@ import java.net.*;
 import java.sql.SQLOutput;
 
 import game.apis.ApiPlayerClient;
-import game.logica.janela.Janela;
+import game.logic.window.Window;
 
 public class GameServer extends Thread{
     private static final GameServer gameServer = new GameServer();

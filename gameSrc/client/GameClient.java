@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 import game.apis.ApiPlayerClient;
 import game.apis.ApiZombieClient;
-import game.logica.player.Player;
+import game.logic.player.Player;
 
 public class GameClient extends Thread{
 

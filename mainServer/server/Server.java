@@ -34,12 +34,16 @@ public class Server extends Thread{
     }
 
     public void run(){
+        System.out.println("Server is running...");
 
         try {
+            System.out.println("Binding to port 8080");
             serverSocket = new ServerSocket(8080);
         } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
             e.getMessage();
         }
+
         while(true){
             try {
                 Socket clientSocket = serverSocket.accept();
@@ -60,6 +64,7 @@ public class Server extends Thread{
                     }
                 }
             } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
                 e.getMessage();
             }
         }

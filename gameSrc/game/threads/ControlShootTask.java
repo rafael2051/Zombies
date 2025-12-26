@@ -2,23 +2,23 @@ package game.threads;
 
 import client.GameClient;
 import game.apis.ApiPlayerClient;
-import game.logica.player.Player;
-import game.logica.player.Bullet;
-import game.logica.zombie.Zombie;
-import game.logica.player.BulletStandard;
+import game.logic.player.Player;
+import game.logic.player.Bullet;
+import game.logic.zombie.Zombie;
+import game.logic.player.BulletStandard;
 
-import game.logica.janela.Janela;
+import game.logic.window.Window;
 
 import java.util.ConcurrentModificationException;
 
-public class TarefaControlShoot implements Runnable{
+public class ControlShootTask implements Runnable{
 
     private Player localPlayer;
-    private Janela janela;
+    private Window window;
     private BulletStandard bulletStandard;
     
-    public TarefaControlShoot(Janela janela, Player localPlayer, BulletStandard bulletStandard){
-        this.janela = janela;
+    public ControlShootTask(Window window, Player localPlayer, BulletStandard bulletStandard){
+        this.window = window;
         this.localPlayer = localPlayer;
         this.bulletStandard = bulletStandard;
     }
@@ -28,7 +28,7 @@ public class TarefaControlShoot implements Runnable{
         boolean collision;
         while(true){
             try{
-                if(janela.controleTecla[4] &&
+                if(window.controleTecla[4] &&
                 localPlayer.getNextImageReloading() == - 1){
                     localPlayer.updateNextImageShooting();
                     localPlayer.setShooting(true);
@@ -36,15 +36,15 @@ public class TarefaControlShoot implements Runnable{
                 else{
                     localPlayer.setShooting(false);
                 }
-                if(janela.controleTecla[5] &&
+                if(window.controleTecla[5] &&
                 localPlayer.getNextImageReloading() == -1){
 
                     localPlayer.setMustReload(true);
                 }
                 for(int i = 0;i < 5;i++){
-                    for(Bullet bullet : janela.bullets){
+                    for(Bullet bullet : window.bullets){
                         collision = false;
-                        for(Zombie zombie : janela.zombies){
+                        for(Zombie zombie : window.zombies){
                             if(bullet.getPosX() >= zombie.getPosX() &&
                                 bullet.getPosX() <= zombie.getPosX() + zombie.getHeight() &&
                                 bullet.getPosY() >= zombie.getPosY() + 20  &&
@@ -84,7 +84,7 @@ public class TarefaControlShoot implements Runnable{
                         e.printStackTrace();
                     }
                     localPlayer.shoot();
-                    janela.addBullet(localPlayer.getPosX() + 74, localPlayer.getPosY() + 59,
+                    window.addBullet(localPlayer.getPosX() + 74, localPlayer.getPosY() + 59,
                             bulletStandard);
                 }
                 else if (localPlayer.getMustReload() == true){

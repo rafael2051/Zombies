@@ -1,4 +1,4 @@
-package game.logica.player;
+package game.logic.player;
 
 public class Bullet {
 

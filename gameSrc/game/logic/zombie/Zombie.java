@@ -1,4 +1,4 @@
-package game.logica.zombie;
+package game.logic.zombie;
 
 public class Zombie {
     public ZombieStandard zombieStandard;
@@ -7,7 +7,6 @@ public class Zombie {
     private int next_image;
     private int next_imageAttack;
     private int idZombie;
-    private int changeImageAttack;
     private boolean attacking;
     private static int noZombies = 0;
     private int hp;
@@ -28,7 +27,6 @@ public class Zombie {
         next_image = 0;
         next_imageAttack = 0;
         attacking = false;
-        changeImageAttack = 0;
         idZombie = noZombies;
         noZombies++;
         hp = 100;

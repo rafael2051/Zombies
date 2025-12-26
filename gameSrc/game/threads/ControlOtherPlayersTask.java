@@ -1,31 +1,30 @@
 package game.threads;
 
 import game.apis.ApiPlayerClient;
-import game.logica.player.Bullet;
-import game.logica.player.BulletStandard;
+import game.logic.player.Bullet;
+import game.logic.player.BulletStandard;
 
-import game.logica.janela.Janela;
+import game.logic.window.Window;
 
-import game.logica.player.Player;
-import game.logica.zombie.Zombie;
+import game.logic.player.Player;
+import game.logic.zombie.Zombie;
 
-import java.util.ConcurrentModificationException;
 import java.util.List;
 
-public class TarefaControlOtherPlayers implements Runnable {
-    private Janela janela;
+public class ControlOtherPlayersTask implements Runnable {
+    private Window window;
     private BulletStandard bulletStandard;
     private ApiPlayerClient apiPlayerClient;
     private Player player;
     private List<Bullet> listBullets;
 
-    public TarefaControlOtherPlayers(Janela janela, BulletStandard bulletStandard,
+    public ControlOtherPlayersTask(Window window, BulletStandard bulletStandard,
                                      Player player) {
-        this.janela = janela;
+        this.window = window;
         this.bulletStandard = bulletStandard;
         apiPlayerClient = ApiPlayerClient.getInstance();
         this.player = player;
-        listBullets = janela.bulletsFromOtherPlayers[player.getId()];
+        listBullets = window.bulletsFromOtherPlayers[player.getId()];
     }
 
     @Override
@@ -47,7 +46,7 @@ public class TarefaControlOtherPlayers implements Runnable {
                         player.setWalking(true);
                         player.updateNextImage();
                     } else if (parametersMessage[2].equals("down") &&
-                            player.getPosY() < janela.getHeight() - 130) {
+                            player.getPosY() < window.getHeight() - 130) {
                         player.walkDown();
                         player.setWalking(true);
                         player.updateNextImage();
@@ -57,7 +56,7 @@ public class TarefaControlOtherPlayers implements Runnable {
                         player.setWalking(true);
                         player.updateNextImage();
                     } else if (parametersMessage[2].equals("right") &&
-                            player.getPosX() < janela.getWidth() - 100) {
+                            player.getPosX() < window.getWidth() - 100) {
                         player.walkRight();
                         player.setWalking(true);
                         player.updateNextImage();
@@ -92,7 +91,7 @@ public class TarefaControlOtherPlayers implements Runnable {
             try{
                 for (Bullet bullet : listBullets) {
                     boolean collision = false;
-                    for (Zombie zombie : janela.zombies) {
+                    for (Zombie zombie : window.zombies) {
                         if (bullet.getPosX() >= zombie.getPosX() &&
                                 bullet.getPosX() <= zombie.getPosX() + zombie.getHeight() &&
                                 bullet.getPosY() >= zombie.getPosY() + 20 &&

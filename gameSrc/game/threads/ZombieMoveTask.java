@@ -2,16 +2,16 @@ package game.threads;
 
 
 import game.apis.ApiZombieClient;
-import game.logica.player.Player;
-import game.logica.zombie.Zombie;
-import game.logica.zombie.ZombieStandard;
+import game.logic.player.Player;
+import game.logic.zombie.Zombie;
+import game.logic.zombie.ZombieStandard;
 
-import game.logica.janela.Janela;
+import game.logic.window.Window;
 
 import java.util.Random;
 
-public class TarefaMoveZombie implements Runnable{
-    private Janela janela;
+public class ZombieMoveTask implements Runnable{
+    private Window window;
     private ZombieStandard zombieStandard;
 
     private ApiZombieClient apiZombieClient;
@@ -20,8 +20,8 @@ public class TarefaMoveZombie implements Runnable{
     private double spawnTime;
 
 
-    public TarefaMoveZombie(Janela janela, ZombieStandard zombieStandard){
-        this.janela = janela;
+    public ZombieMoveTask(Window window, ZombieStandard zombieStandard){
+        this.window = window;
         this.zombieStandard = zombieStandard;
         apiZombieClient = ApiZombieClient.getInstance();
         previousTime = System.currentTimeMillis();
@@ -31,19 +31,18 @@ public class TarefaMoveZombie implements Runnable{
 
     @Override
     public void run() {
-        Random random = new Random();
         while(true){
             currentTime = System.currentTimeMillis() - previousTime;
-            for(Zombie zombie : janela.zombies){
+            for(Zombie zombie : window.zombies){
                 if(zombie.isDead()){
                     continue;
                 }
                 if(zombie.getPosX() <= 0 && zombie.getMustRender()){
                     zombie.setMustRender(false);
-                    janela.decreasesHP();
+                    window.decreasesHP();
                     continue;
                 }
-                for(Player player : janela.players){
+                for(Player player : window.players){
                     if((zombie.getPosX() >= 
                         (player.getPosX() + player.getWidth() - 60) &&
                         zombie.getPosX() <= 
@@ -70,7 +69,7 @@ public class TarefaMoveZombie implements Runnable{
                 previousTime = System.currentTimeMillis();
                 currentTime = 0;
                 int[] posZombie = apiZombieClient.getPosZombie();
-                janela.addZombie(new Zombie(posZombie[0], posZombie[1],
+                window.addZombie(new Zombie(posZombie[0], posZombie[1],
                                 zombieStandard));
             }
             try {

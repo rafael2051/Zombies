@@ -1,4 +1,4 @@
-package game.logica.zombie;
+package game.logic.zombie;
 
 import java.util.ArrayList;
 import java.util.List;

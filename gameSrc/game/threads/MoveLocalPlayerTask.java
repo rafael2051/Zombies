@@ -3,29 +3,27 @@ package game.threads;
 import client.GameClient;
 import game.Keys;
 import game.apis.ApiPlayerClient;
-import game.logica.player.BulletStandard;
+import game.logic.player.BulletStandard;
 
-import game.logica.janela.Janela;
+import game.logic.window.Window;
 
-import game.logica.player.Player;
+import game.logic.player.Player;
 
-public class TarefaMoveLocalPlayer implements Runnable{
+public class MoveLocalPlayerTask implements Runnable{
 
-    private Janela janela;
+    private Window window;
     private Player localPlayer;
-    private BulletStandard bulletStandard;
 
-    public TarefaMoveLocalPlayer(Janela janela, Player localPlayer, BulletStandard bulletStandard){
-        this.janela = janela;
+    public MoveLocalPlayerTask(Window window, Player localPlayer, BulletStandard bulletStandard){
+        this.window = window;
         this.localPlayer = localPlayer;
-        this.bulletStandard = bulletStandard;
     }
     @Override
     public void run() {
         while(true){
             String msg = "";
             msg += ApiPlayerClient.getInstance().getId() + ";";
-            if(janela.controleTecla[Keys.UP] && 
+            if(window.controleTecla[Keys.UP] && 
                 localPlayer.getPosY() > 20){
                 localPlayer.walkUp();
                 msg += "walk;up;" + localPlayer.getPosX() +
@@ -33,15 +31,15 @@ public class TarefaMoveLocalPlayer implements Runnable{
                 localPlayer.setWalking(true);
                 localPlayer.updateNextImage();
             }
-            else if(janela.controleTecla[Keys.DOWN] &&
-                localPlayer.getPosY() < janela.getHeight() - 130){
+            else if(window.controleTecla[Keys.DOWN] &&
+                localPlayer.getPosY() < window.getHeight() - 130){
                 localPlayer.walkDown();
                 msg += "walk;down;" + localPlayer.getPosX() +
                         ";" + localPlayer.getPosY() + ";";
                 localPlayer.setWalking(true);
                 localPlayer.updateNextImage();
             }
-            else if(janela.controleTecla[Keys.LEFT] &&
+            else if(window.controleTecla[Keys.LEFT] &&
                 localPlayer.getPosX() > 0){
                 localPlayer.walkLeft();
                 msg += "walk;left;" + localPlayer.getPosX() +
@@ -49,8 +47,8 @@ public class TarefaMoveLocalPlayer implements Runnable{
                 localPlayer.setWalking(true);
                 localPlayer.updateNextImage();
             }
-            else if(janela.controleTecla[Keys.RIGHT] &&
-                localPlayer.getPosX() < janela.getWidth() - 100){
+            else if(window.controleTecla[Keys.RIGHT] &&
+                localPlayer.getPosX() < window.getWidth() - 100){
                 localPlayer.walkRight();
                 msg += "walk;right;" + localPlayer.getPosX() +
                         ";" + localPlayer.getPosY() + ";";
